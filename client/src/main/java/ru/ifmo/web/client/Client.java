@@ -10,9 +10,7 @@ import org.uddi.api_v3.BusinessEntity;
 import org.uddi.api_v3.BusinessService;
 import org.uddi.api_v3.Name;
 import org.uddi.api_v3.ServiceDetail;
-import ru.ifmo.web.client.AstartesService;
-import ru.ifmo.web.client.Astartes_Service;
-import ru.ifmo.web.client.AstartesServiceException;
+import ru.ifmo.web.client.AstartesRequestObject;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -20,7 +18,6 @@ import javax.xml.ws.BindingProvider;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -125,7 +122,14 @@ public class Client {
                     } while (createBirthdate == null);
                     Long createdId;
                     try {
-                        createdId = service.create(createName, createTitle, createPosition, createPlanet, createBirthdate);
+                        AstartesRequestObject requestObject = new AstartesRequestObject();
+                        requestObject.setId(null);
+                        requestObject.setName(createName);
+                        requestObject.setPlanet(createPlanet);
+                        requestObject.setBirthdate(createBirthdate);
+                        requestObject.setPosition(createPosition);
+                        requestObject.setTitle(createTitle);
+                        createdId = service.createWithObject(requestObject);
                         System.out.println("ID новой записи: " + createdId);
                     } catch (AstartesServiceException e) {
                         System.out.println(e.getFaultInfo().getMessage());
@@ -395,6 +399,17 @@ public class Client {
             } else {
                 return null;
             }
+        } catch (java.lang.Exception e) {
+            return null;
+        }
+    }
+
+    private static Date readNotXMLDate(BufferedReader reader) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+            return sdf.parse(reader.readLine());
+
         } catch (java.lang.Exception e) {
             return null;
         }

@@ -83,4 +83,14 @@ public class AstartesService {
             throw new AstartesServiceException(message, e, new AstartesServiceFault(message));
         }
     }
+
+    @WebMethod
+    public Long createWithObject(@WebParam(name = "astartes") AstartesRequestObject astartes) throws AstartesServiceException {
+        try {
+            return astartesDAO.create(astartes.getName(), astartes.getTitle(), astartes.getPosition(), astartes.getPlanet(), astartes.getBirthdate());
+        } catch (SQLException e) {
+            String message = "SQL exception: " + e.getMessage() + ". State: " + e.getSQLState();
+            throw new AstartesServiceException(message, e, new AstartesServiceFault(message));
+        }
+    }
 }
